@@ -3,20 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infinite AI Mesh — Live Multi-Engine Simulator</title>
+  <title>Infinite AI Mesh — Sovereign 24/7 Multi-Engine Simulator</title>
   <style>
     :root {
-      --bg: #090B10;
-      --card-bg: rgba(18, 22, 34, 0.85);
-      --border: #232B42;
+      --bg: #07090E;
+      --card-bg: rgba(15, 19, 32, 0.85);
+      --card-hover: rgba(22, 28, 48, 0.95);
+      --border: #1F283F;
+      --border-glow: rgba(0, 240, 255, 0.3);
       --accent-cyan: #00F0FF;
-      --accent-purple: #9D4EDD;
-      --accent-green: #10B981;
-      --accent-red: #EF4444;
-      --text: #F3F4F6;
+      --accent-purple: #A855F7;
+      --accent-emerald: #10B981;
+      --accent-rose: #F43F5E;
+      --accent-amber: #F59E0B;
+      --text: #F8FAFC;
       --text-dim: #94A3B8;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; }
+
     body {
       background-color: var(--bg);
       color: var(--text);
@@ -24,71 +30,118 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
     }
+
     header {
-      padding: 1.5rem 2rem;
+      padding: 1.25rem 2rem;
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(9, 11, 16, 0.9);
-      backdrop-filter: blur(12px);
+      background: rgba(7, 9, 14, 0.88);
+      backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 50;
     }
-    .logo {
+
+    .logo-group {
       display: flex;
       align-items: center;
       gap: 0.75rem;
+    }
+    .logo-title {
       font-weight: 800;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .logo-badge {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-      color: #000;
-      font-size: 0.75rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
+    .badge-sovereign {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(168, 85, 247, 0.15));
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      color: var(--accent-cyan);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
       font-weight: 700;
+      letter-spacing: 0.5px;
     }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-audio-toggle {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+    .btn-audio-toggle:hover {
+      border-color: var(--accent-cyan);
+      color: var(--text);
+    }
+    .btn-audio-toggle.active {
+      color: var(--accent-cyan);
+      border-color: rgba(0, 240, 255, 0.4);
+      background: rgba(0, 240, 255, 0.08);
+    }
+
     .status-pill {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.85rem;
-      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.85rem;
       border-radius: 9999px;
       background: rgba(16, 185, 129, 0.1);
       border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--accent-green);
+      color: var(--accent-emerald);
+      font-weight: 600;
     }
     .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--accent-green);
-      box-shadow: 0 0 10px var(--accent-green);
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
       animation: pulse 2s infinite;
     }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    @media (prefers-reduced-motion: reduce) {
-      .status-dot { animation: none; }
-    }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } }
 
     main {
       flex: 1;
-      padding: 2rem;
-      max-width: 1200px;
+      padding: 1.75rem 2rem;
+      max-width: 1400px;
       margin: 0 auto;
       width: 100%;
       display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 2rem;
+      grid-template-columns: 1fr 380px;
+      gap: 1.75rem;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 1050px) {
       main { grid-template-columns: 1fr; }
+    }
+
+    /* Left Column: Canvas and Interactive ROI */
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
     }
 
     .canvas-container {
@@ -97,9 +150,8 @@
       border-radius: 16px;
       position: relative;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+      backdrop-filter: blur(12px);
     }
     .canvas-header {
       padding: 1rem 1.5rem;
@@ -107,189 +159,573 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: rgba(10, 13, 22, 0.6);
     }
     .canvas-title {
       font-size: 0.95rem;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .canvas-hint {
+      font-size: 0.75rem;
       color: var(--text-dim);
     }
-    canvas {
+
+    #meshCanvas {
       width: 100%;
       height: 480px;
       display: block;
+      cursor: crosshair;
     }
 
-    .controls-panel {
+    /* Node Inspector Drawer */
+    .node-inspector {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      background: rgba(12, 16, 28, 0.95);
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      transform: translateY(150%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 20;
+    }
+    .node-inspector.visible {
+      transform: translateY(0);
+    }
+    .inspector-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    .inspector-meta {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 0.2rem;
+    }
+    .inspector-stats {
+      display: flex;
+      gap: 1.5rem;
+      text-align: right;
+    }
+    .inspector-stat-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .inspector-stat-lbl {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+    .btn-close-inspector {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0 0.5rem;
+    }
+
+    /* ROI & Cost Bleed Calculator */
+    .calc-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .calc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .calc-title {
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .slider-container {
+      margin-bottom: 1.5rem;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-dim);
+    }
+    .slider-labels strong {
+      color: var(--accent-cyan);
+      font-size: 1rem;
+    }
+    input[type=range] {
+      width: 100%;
+      height: 6px;
+      background: #1F283F;
+      border-radius: 4px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--accent-cyan);
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 768px) {
+      .calc-grid { grid-template-columns: 1fr; }
+    }
+    .calc-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    .calc-box.highlight {
+      background: rgba(16, 185, 129, 0.06);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .calc-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .calc-val.green { color: var(--accent-emerald); }
+    .calc-val.red { color: var(--accent-rose); text-decoration: line-through; opacity: 0.8; }
+    .calc-lbl {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    /* Right Column: Controls, Telemetry & Logs */
+    .right-col {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
-    .metric-card {
+
+    .telemetry-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 1.25rem;
     }
+    .card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     .metric-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 0.75rem;
     }
     .metric-box {
-      background: rgba(255,255,255,0.03);
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 0.85rem;
     }
     .metric-val {
-      font-size: 1.4rem;
-      font-weight: 700;
+      font-size: 1.35rem;
+      font-weight: 800;
       color: var(--accent-cyan);
     }
     .metric-label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-dim);
       margin-top: 0.2rem;
     }
 
+    /* Interactive Buttons */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
     .action-btn {
       width: 100%;
       padding: 0.85rem;
-      border-radius: 8px;
-      border: none;
-      font-weight: 600;
-      font-size: 0.9rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.88rem;
       cursor: pointer;
-      transition: all 0.2s ease;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 0.5rem;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid var(--accent-red);
-      color: var(--accent-red);
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.5);
+      color: var(--accent-rose);
     }
     .btn-danger:hover {
-      background: var(--accent-red);
+      background: var(--accent-rose);
       color: #fff;
+      box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
+    }
+    .btn-chaos {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      color: var(--accent-amber);
+    }
+    .btn-chaos:hover {
+      background: var(--accent-amber);
+      color: #000;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    }
+    .btn-chaos.active {
+      background: var(--accent-amber);
+      color: #000;
     }
     .btn-primary {
       background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      border: none;
       color: #000;
-      margin-top: 0.5rem;
+      font-weight: 800;
     }
     .btn-primary:hover {
-      opacity: 0.9;
       transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
     }
 
-    .log-box {
-      background: rgba(0,0,0,0.5);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.75rem;
-      height: 180px;
-      overflow-y: auto;
-      color: #A7F3D0;
-      line-height: 1.4;
+    /* Quick Preset Selector */
+    .presets-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
     }
-    .log-entry { margin-bottom: 0.4rem; }
-    .log-warn { color: #FBBF24; }
-    .log-err { color: #F87171; }
-    .log-time { color: var(--text-dim); }
+    .preset-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-dim);
+      font-size: 0.72rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-chip:hover {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: rgba(0, 240, 255, 0.3);
+      color: var(--accent-cyan);
+    }
+
+    /* Terminal Event Log */
+    .log-box {
+      background: rgba(5, 7, 12, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      height: 220px;
+      overflow-y: auto;
+      color: #D1FAE5;
+      line-height: 1.5;
+    }
+    .log-entry { margin-bottom: 0.35rem; }
+    .log-time { color: var(--text-dim); font-size: 0.68rem; }
+    .log-warn { color: var(--accent-amber); }
+    .log-err { color: var(--accent-rose); font-weight: 600; }
+    .log-succ { color: var(--accent-emerald); }
+    .log-cyan { color: var(--accent-cyan); }
+
+    footer {
+      padding: 1.25rem 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer a { color: var(--accent-cyan); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="logo">
-      <span>🌌 Infinite AI Mesh</span>
-      <span class="logo-badge">SOVEREIGN 24/7</span>
+    <div class="logo-group">
+      <div class="logo-title">
+        <span>🌌 Infinite AI Mesh</span>
+      </div>
+      <span class="badge-sovereign">SOVEREIGN 24/7</span>
     </div>
-    <div class="status-pill" id="global-status">
-      <div class="status-dot" id="status-dot"></div>
-      <span id="status-text">Cascading Mesh Active</span>
+    <div class="nav-actions">
+      <button class="btn-audio-toggle active" id="audioToggle" onclick="toggleAudio()">
+        <span id="audioIcon">🔊</span> <span id="audioLabel">Sound FX: ON</span>
+      </button>
+      <div class="status-pill" id="global-status">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">Cascading Mesh Active</span>
+      </div>
     </div>
   </header>
 
   <main>
-    <section class="canvas-container">
-      <div class="canvas-header">
-        <span class="canvas-title">Interactive Neural Topology & Live Failover Map</span>
-        <span style="font-size: 0.75rem; color: var(--accent-cyan);">Zero Token Leak • Self-Healing</span>
-      </div>
-      <canvas id="meshCanvas"></canvas>
-    </section>
+    <div class="left-col">
+      <section class="canvas-container">
+        <div class="canvas-header">
+          <div class="canvas-title">
+            <span>Dynamic Neural Topology & Live Failover Map</span>
+          </div>
+          <span class="canvas-hint">Click any node to inspect telemetry • Drag to visualize route</span>
+        </div>
+        <canvas id="meshCanvas"></canvas>
 
-    <aside class="controls-panel">
-      <div class="metric-card">
-        <h3 style="font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--text-dim);">SYSTEM TELEMETRY</h3>
+        <div class="node-inspector" id="nodeInspector">
+          <div>
+            <div class="inspector-title" id="insName">Node Inspector</div>
+            <div class="inspector-meta" id="insMeta">Click a node to view runtime telemetry</div>
+          </div>
+          <div class="inspector-stats">
+            <div>
+              <div class="inspector-stat-val" id="insCost">$0.00</div>
+              <div class="inspector-stat-lbl">Cost / Task</div>
+            </div>
+            <div>
+              <div class="inspector-stat-val" id="insLatency">12ms</div>
+              <div class="inspector-stat-lbl">Routing Speed</div>
+            </div>
+            <div>
+              <div class="inspector-stat-val" id="insState" style="color: var(--accent-emerald);">CLOSED</div>
+              <div class="inspector-stat-lbl">Circuit Breaker</div>
+            </div>
+            <button class="btn-close-inspector" onclick="closeInspector()">×</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Enterprise ROI & Token Bleed Calculator -->
+      <section class="calc-card">
+        <div class="calc-header">
+          <div class="calc-title">
+            <span>💰 Enterprise Token Bleed & ROI Calculator</span>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--accent-cyan);">Zero Token Bleed By Design</span>
+        </div>
+        <div class="slider-container">
+          <div class="slider-labels">
+            <span>Daily Autonomous Prompts Dispatched:</span>
+            <span><strong id="promptCountLabel">2,500</strong> tasks / day</span>
+          </div>
+          <input type="range" id="promptSlider" min="200" max="25000" step="100" value="2500" oninput="updateCalculator()">
+        </div>
+        <div class="calc-grid">
+          <div class="calc-box">
+            <div class="calc-val red" id="cloudCostVal">$450.00</div>
+            <div class="calc-lbl">Traditional Cloud APIs (Pay-per-token / mo)</div>
+          </div>
+          <div class="calc-box highlight">
+            <div class="calc-val green" id="meshCostVal">$0.00</div>
+            <div class="calc-lbl">Infinite AI Mesh Architecture (Fixed / mo)</div>
+          </div>
+          <div class="calc-box">
+            <div class="calc-val green" id="savingsAnnualVal">$5,400.00</div>
+            <div class="calc-lbl">Annual Enterprise Savings (100% Retained)</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Controls Column -->
+    <div class="right-col">
+      <div class="telemetry-card">
+        <div class="card-title">
+          <span>SYSTEM TELEMETRY</span>
+          <span style="font-size: 0.7rem; color: var(--accent-emerald);">REALTIME</span>
+        </div>
         <div class="metric-grid">
           <div class="metric-box">
             <div class="metric-val" id="uptime-val">99.99%</div>
             <div class="metric-label">Operational Uptime</div>
           </div>
           <div class="metric-box">
-            <div class="metric-val" id="latency-val">42ms</div>
-            <div class="metric-label">Routing Latency</div>
+            <div class="metric-val" id="latency-val">14ms</div>
+            <div class="metric-label">Failover Latency</div>
           </div>
           <div class="metric-box">
             <div class="metric-val" id="active-nodes">4 / 4</div>
-            <div class="metric-label">Active Engines</div>
+            <div class="metric-label">Healthy Engines</div>
           </div>
           <div class="metric-box">
-            <div class="metric-val" style="color: var(--accent-green);">$0.00</div>
-            <div class="metric-label">API Bleed Waste</div>
+            <div class="metric-val" style="color: var(--accent-emerald);">$0.00</div>
+            <div class="metric-label">Token Leak Bleed</div>
           </div>
         </div>
       </div>
 
-      <div class="metric-card">
-        <h3 style="font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--text-dim);">FAILOVER SIMULATOR</h3>
-        <button class="action-btn btn-danger" id="trigger-fail-btn" onclick="toggleFailover()">
-          💥 Trigger Tier 1 Outage (HTTP 429)
-        </button>
-        <button class="action-btn btn-primary" onclick="simulateUserPrompt()">
-          ⚡ Send AI Autonomous Task
-        </button>
-      </div>
+      <div class="telemetry-card">
+        <div class="card-title">
+          <span>SIMULATION CONTROLLER</span>
+        </div>
+        <div class="action-group">
+          <button class="action-btn btn-danger" id="trigger-fail-btn" onclick="toggleFailover()">
+            💥 Inject Tier 1 Outage (HTTP 429)
+          </button>
+          <button class="action-btn btn-chaos" id="chaos-btn" onclick="toggleChaosMonkey()">
+            👾 Chaos Monkey Stress Test (Auto)
+          </button>
+          <button class="action-btn btn-primary" onclick="simulateUserPrompt()">
+            ⚡ Dispatch Autonomous AI Task
+          </button>
+        </div>
 
-      <div class="metric-card">
-        <h3 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-dim);">FAILOVER EVENT LOG</h3>
-        <div class="log-box" id="event-log">
-          <div class="log-entry"><span class="log-time">[BOOT]</span> Mesh initialized. All 4 tiers connected.</div>
-          <div class="log-entry"><span class="log-time">[READY]</span> Tier 1 (Headless CLI), Tier 2 (NVIDIA NIM), Tier 3 (Ollama 14B), Tier 4 (DeepSeek API).</div>
+        <div style="margin-top: 1rem;">
+          <div style="font-size: 0.72rem; color: var(--text-dim); margin-bottom: 0.3rem;">PRESET DISPATCH PROMPTS:</div>
+          <div class="presets-container">
+            <span class="preset-chip" onclick="dispatchPreset('Audit Smart Contract Reentrancy')">Smart Contract Audit</span>
+            <span class="preset-chip" onclick="dispatchPreset('Refactor Async DB Connection Pool')">C++/Rust Refactor</span>
+            <span class="preset-chip" onclick="dispatchPreset('24/7 Linux Memory Guardrail Watchdog')">Daemon Watchdog</span>
+            <span class="preset-chip" onclick="dispatchPreset('Multi-Model Consensus Verification')">Consensus Voting</span>
+          </div>
         </div>
       </div>
-    </aside>
+
+      <div class="telemetry-card">
+        <div class="card-title">
+          <span>CASCADING AUDIT LOG</span>
+          <button onclick="clearLogs()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:0.7rem;">Clear</button>
+        </div>
+        <div class="log-box" id="event-log">
+          <div class="log-entry"><span class="log-time">[BOOT]</span> <span class="log-succ">Infinite AI Mesh v3.0 initialized.</span></div>
+          <div class="log-entry"><span class="log-time">[CIRCUIT]</span> All 4 engine tiers verified: CLOSED (Healthy).</div>
+          <div class="log-entry"><span class="log-time">[READY]</span> Memory Sweet-Spot active: 14B Q4 in RAM with 8GB Swap headroom.</div>
+        </div>
+      </div>
+    </div>
   </main>
 
+  <footer>
+    <div>
+      Infinite AI Mesh is 100% Open Source under MIT License • Built for <a href="https://github.com/PabloIan92/infinite-ai-mesh" target="_blank">PabloIan92/infinite-ai-mesh</a>
+    </div>
+    <div>
+      Founding.dev Hackathon Ready • Zero Single-Point-of-Failure
+    </div>
+  </footer>
+
   <script>
+    // Web Audio API Synthesizer (Zero External Dependencies)
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      const btn = document.getElementById('audioToggle');
+      const icon = document.getElementById('audioIcon');
+      const lbl = document.getElementById('audioLabel');
+      if (audioEnabled) {
+        btn.classList.add('active');
+        icon.textContent = '🔊';
+        lbl.textContent = 'Sound FX: ON';
+        playTone(660, 'sine', 0.08, 0.1);
+      } else {
+        btn.classList.remove('active');
+        icon.textContent = '🔇';
+        lbl.textContent = 'Sound FX: OFF';
+      }
+    }
+
+    function playTone(freq, type='sine', duration=0.1, gain=0.12) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(gain, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    function playChime() {
+      if (!audioEnabled) return;
+      playTone(523.25, 'sine', 0.12, 0.08);
+      setTimeout(() => playTone(659.25, 'sine', 0.14, 0.08), 70);
+      setTimeout(() => playTone(783.99, 'sine', 0.22, 0.08), 140);
+    }
+
+    function playAlert() {
+      if (!audioEnabled) return;
+      playTone(180, 'sawtooth', 0.25, 0.15);
+    }
+
+    // Canvas Setup
     const canvas = document.getElementById('meshCanvas');
     const ctx = canvas.getContext('2d');
     let width, height;
 
     function resize() {
-      width = canvas.parentElement.clientWidth;
-      height = canvas.parentElement.clientHeight - 50;
-      canvas.width = width;
-      canvas.height = height;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      width = rect.width;
+      height = 480;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
     }
     window.addEventListener('resize', resize);
     resize();
 
     let tier1Failed = false;
+    let chaosActive = false;
+    let chaosTimer = null;
 
     const nodes = [
-      { id: 'user', name: 'Mobile / User Gateway', x: 0.15, y: 0.5, color: '#00F0FF', tier: 'Source', active: true },
-      { id: 't1', name: 'Tier 1: Sovereign Headless (Antigravity/Claude)', x: 0.5, y: 0.2, color: '#10B981', tier: 'Primary', active: true },
-      { id: 't2', name: 'Tier 2: NVIDIA NIM (Nemotron 120B/550B)', x: 0.5, y: 0.45, color: '#9D4EDD', tier: 'Enterprise Offload', active: true },
-      { id: 't3', name: 'Tier 3: Local Sovereign Core (Ollama 14B)', x: 0.5, y: 0.75, color: '#3B82F6', tier: '100% Offline Core', active: true },
-      { id: 't4', name: 'Tier 4: DeepSeek Reasoner API', x: 0.85, y: 0.5, color: '#EC4899', tier: 'Fallback Mesh', active: true }
+      { id: 'user', name: 'Mobile / User Gateway', x: 0.12, y: 0.5, color: '#00F0FF', tier: 'Source', active: true, specs: 'Telegram / Webhook Bridge • PM2 24/7 Daemon', cost: '$0.00', latency: '2ms' },
+      { id: 't1', name: 'Tier 1: Sovereign Headless', x: 0.52, y: 0.18, color: '#10B981', tier: 'Primary CLI Agent', active: true, specs: 'Antigravity / Claude Code • Persistent OAuth Session', cost: '$0.00', latency: '12ms' },
+      { id: 't2', name: 'Tier 2: NVIDIA NIM Cloud', x: 0.52, y: 0.42, color: '#A855F7', tier: 'Enterprise Offload', active: true, specs: 'Nemotron 120B VL & 550B MoE • Deep CoT Reasoning', cost: 'Free Dev', latency: '48ms' },
+      { id: 't3', name: 'Tier 3: Local Sovereign Core', x: 0.52, y: 0.68, color: '#3B82F6', tier: '100% Offline Core', active: true, specs: 'Ollama Qwen 2.5 Coder 14B • 100% RAM resident + 8GB Swap', cost: '$0.00', latency: '35ms' },
+      { id: 't4', name: 'Tier 4: DeepSeek Fallback', x: 0.88, y: 0.5, color: '#F43F5E', tier: 'Consensus & Safety Net', active: true, specs: 'DeepSeek Reasoner API • Mathematical verification', cost: '< $0.0001', latency: '95ms' }
     ];
 
     let packets = [];
@@ -298,9 +734,13 @@
       const log = document.getElementById('event-log');
       const time = new Date().toLocaleTimeString();
       const entry = document.createElement('div');
-      entry.className = 'log-entry ' + (type === 'warn' ? 'log-warn' : type === 'err' ? 'log-err' : '');
+      entry.className = 'log-entry ' + (type === 'warn' ? 'log-warn' : type === 'err' ? 'log-err' : type === 'succ' ? 'log-succ' : type === 'cyan' ? 'log-cyan' : '');
       entry.innerHTML = `<span class="log-time">[${time}]</span> ${msg}`;
       log.prepend(entry);
+    }
+
+    function clearLogs() {
+      document.getElementById('event-log').innerHTML = '<div class="log-entry"><span class="log-time">[CLEARED]</span> Log buffer reset.</div>';
     }
 
     function toggleFailover() {
@@ -309,88 +749,217 @@
       const dot = document.getElementById('status-dot');
       const stText = document.getElementById('status-text');
       const activeEl = document.getElementById('active-nodes');
+      const latencyEl = document.getElementById('latency-val');
 
       nodes[1].active = !tier1Failed;
 
       if (tier1Failed) {
+        playAlert();
         btn.textContent = '🔄 Restore Tier 1 Engine';
         btn.className = 'action-btn btn-primary';
         dot.style.background = '#F59E0B';
         dot.style.boxShadow = '0 0 10px #F59E0B';
         stText.textContent = 'Auto-Failover Active (Tier 2/3)';
         activeEl.textContent = '3 / 4';
-        addLog('CRITICAL: Tier 1 encountered Rate Limit (HTTP 429)!', 'err');
-        addLog('AUTONOMOUS REROUTE: Workload shifted to Tier 2 (NVIDIA NIM) + Tier 3 (Ollama 14B) in 14ms.', 'warn');
+        latencyEl.textContent = '18ms';
+        addLog('CRITICAL OUTAGE: Tier 1 encountered Rate Limit (HTTP 429)! Circuit breaker tripped to OPEN.', 'err');
+        addLog('AUTONOMOUS CIRCUIT REROUTE: Workload shifted to Tier 2 (NVIDIA NIM) & Tier 3 (Ollama 14B) in 14ms.', 'warn');
       } else {
-        btn.textContent = '💥 Trigger Tier 1 Outage (HTTP 429)';
+        playChime();
+        btn.textContent = '💥 Inject Tier 1 Outage (HTTP 429)';
         btn.className = 'action-btn btn-danger';
         dot.style.background = '#10B981';
         dot.style.boxShadow = '0 0 10px #10B981';
         stText.textContent = 'Cascading Mesh Active';
         activeEl.textContent = '4 / 4';
-        addLog('RECOVERY: Tier 1 health check PASSED. Primary route re-engaged.', 'info');
+        latencyEl.textContent = '14ms';
+        addLog('CIRCUIT HEALED: Tier 1 health check PASSED. Circuit breaker reset to CLOSED.', 'succ');
       }
     }
 
-    function simulateUserPrompt() {
-      const target = tier1Failed ? nodes[2] : nodes[1];
+    function toggleChaosMonkey() {
+      chaosActive = !chaosActive;
+      const btn = document.getElementById('chaos-btn');
+      if (chaosActive) {
+        btn.classList.add('active');
+        btn.textContent = '🛑 Stop Chaos Monkey';
+        addLog('👾 CHAOS MONKEY ENGAGED: Injecting random API latency spikes & simulated provider drops...', 'warn');
+        chaosTimer = setInterval(() => {
+          if (Math.random() < 0.4) {
+            toggleFailover();
+          }
+          simulateUserPrompt();
+        }, 1800);
+      } else {
+        btn.classList.remove('active');
+        btn.textContent = '👾 Chaos Monkey Stress Test (Auto)';
+        clearInterval(chaosTimer);
+        if (tier1Failed) toggleFailover();
+        addLog('Chaos Monkey halted. Normal cascade operating.', 'cyan');
+      }
+    }
+
+    function dispatchPreset(taskName) {
+      addLog(`Preset selected: "${taskName}"`, 'cyan');
+      simulateUserPrompt(taskName);
+    }
+
+    function simulateUserPrompt(customTask) {
+      playTone(1100, 'sine', 0.04, 0.07);
+      const target = tier1Failed ? (Math.random() > 0.4 ? nodes[2] : nodes[3]) : nodes[1];
       packets.push({
         x: nodes[0].x * width,
         y: nodes[0].y * height,
         tx: target.x * width,
         ty: target.y * height,
         progress: 0,
-        speed: 0.04,
+        speed: 0.038,
         color: '#00F0FF',
-        targetNode: target
+        targetNode: target,
+        task: customTask || 'Autonomous Code Execution Task'
       });
-      addLog(`Dispatched user prompt → routing to ${target.name.split(':')[0]}`, 'info');
+      addLog(`Dispatched: "${customTask || 'Agent Task'}" → Routing to ${target.name.split(':')[0]}`, 'info');
     }
 
+    // Node Inspector Handling
+    function inspectNode(node) {
+      playTone(880, 'sine', 0.05, 0.06);
+      const drawer = document.getElementById('nodeInspector');
+      document.getElementById('insName').textContent = node.name;
+      document.getElementById('insMeta').textContent = node.specs;
+      document.getElementById('insCost').textContent = node.cost;
+      document.getElementById('insLatency').textContent = node.latency;
+      const stateEl = document.getElementById('insState');
+      if (!node.active) {
+        stateEl.textContent = 'OPEN (Outage)';
+        stateEl.style.color = 'var(--accent-rose)';
+      } else {
+        stateEl.textContent = 'CLOSED (Healthy)';
+        stateEl.style.color = 'var(--accent-emerald)';
+      }
+      drawer.classList.add('visible');
+    }
+
+    function closeInspector() {
+      document.getElementById('nodeInspector').classList.remove('visible');
+    }
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      let found = false;
+      nodes.forEach(n => {
+        const nx = n.x * width;
+        const ny = n.y * height;
+        const dist = Math.hypot(clickX - nx, clickY - ny);
+        if (dist <= 24) {
+          inspectNode(n);
+          found = true;
+        }
+      });
+      if (!found && clickY < 400) closeInspector();
+    });
+
+    // ROI Calculator Function
+    function updateCalculator() {
+      const prompts = parseInt(document.getElementById('promptSlider').value);
+      document.getElementById('promptCountLabel').textContent = prompts.toLocaleString();
+
+      // Approx 6,000 tokens per full agent task (reading files, thinking, diff generation)
+      // GPT-4o / Claude 3.5 Sonnet average rate: $5 per million tokens
+      const monthlyTokensM = (prompts * 30 * 6000) / 1000000;
+      const traditionalCost = monthlyTokensM * 5.0;
+      const annualSavings = traditionalCost * 12;
+
+      document.getElementById('cloudCostVal').textContent = `$${Math.round(traditionalCost).toLocaleString()}.00`;
+      document.getElementById('savingsAnnualVal').textContent = `$${Math.round(annualSavings).toLocaleString()}.00`;
+    }
+    updateCalculator();
+
+    // Render Animation Loop
     function draw() {
       ctx.clearRect(0, 0, width, height);
 
-      // Draw connections
-      nodes.forEach((n, idx) => {
-        if (idx === 0) return;
-        const u = nodes[0];
+      // Subtle Background Grid
+      ctx.strokeStyle = 'rgba(31, 40, 63, 0.35)';
+      ctx.lineWidth = 1;
+      const step = 40;
+      for (let x = 0; x < width; x += step) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+      }
+      for (let y = 0; y < height; y += step) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+      }
+
+      // Draw Curved Bezier Connections from User Gateway
+      const u = nodes[0];
+      [nodes[1], nodes[2], nodes[3]].forEach(target => {
         ctx.beginPath();
         ctx.moveTo(u.x * width, u.y * height);
-        ctx.lineTo(n.x * width, n.y * height);
-        ctx.strokeStyle = (n.active) ? 'rgba(0, 240, 255, 0.15)' : 'rgba(239, 68, 68, 0.2)';
-        ctx.lineWidth = n.active ? 2 : 1;
+        const cp1x = (u.x + target.x) / 2 * width;
+        const cp1y = u.y * height;
+        const cp2x = (u.x + target.x) / 2 * width;
+        const cp2y = target.y * height;
+        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, target.x * width, target.y * height);
+
+        if (target.active) {
+          ctx.strokeStyle = 'rgba(0, 240, 255, 0.2)';
+          ctx.lineWidth = 2;
+        } else {
+          ctx.strokeStyle = 'rgba(244, 63, 94, 0.25)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 4]);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+
+      // Connections to Fallback Tier 4
+      [nodes[1], nodes[2], nodes[3]].forEach(source => {
+        const fb = nodes[4];
+        ctx.beginPath();
+        ctx.moveTo(source.x * width, source.y * height);
+        const cp1x = (source.x + fb.x) / 2 * width;
+        const cp1y = source.y * height;
+        const cp2x = (source.x + fb.x) / 2 * width;
+        const cp2y = fb.y * height;
+        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, fb.x * width, fb.y * height);
+        ctx.strokeStyle = 'rgba(168, 85, 247, 0.15)';
+        ctx.lineWidth = 1.5;
         ctx.stroke();
       });
 
-      // Secondary mesh connections
-      ctx.beginPath();
-      ctx.moveTo(nodes[1].x * width, nodes[1].y * height);
-      ctx.lineTo(nodes[4].x * width, nodes[4].y * height);
-      ctx.moveTo(nodes[2].x * width, nodes[2].y * height);
-      ctx.lineTo(nodes[4].x * width, nodes[4].y * height);
-      ctx.moveTo(nodes[3].x * width, nodes[3].y * height);
-      ctx.lineTo(nodes[4].x * width, nodes[4].y * height);
-      ctx.strokeStyle = 'rgba(157, 78, 221, 0.15)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // Animate packets
+      // Animate Packets along Beziers
       packets.forEach((p, idx) => {
         p.progress += p.speed;
-        const curX = p.x + (p.tx - p.x) * p.progress;
-        const curY = p.y + (p.ty - p.y) * p.progress;
+        const startX = nodes[0].x * width;
+        const startY = nodes[0].y * height;
+        const endX = p.targetNode.x * width;
+        const endY = p.targetNode.y * height;
+
+        const cp1x = (nodes[0].x + p.targetNode.x) / 2 * width;
+        const cp1y = startY;
+        const cp2x = (nodes[0].x + p.targetNode.x) / 2 * width;
+        const cp2y = endY;
+
+        const t = p.progress;
+        const curX = Math.pow(1 - t, 3) * startX + 3 * Math.pow(1 - t, 2) * t * cp1x + 3 * (1 - t) * Math.pow(t, 2) * cp2x + Math.pow(t, 3) * endX;
+        const curY = Math.pow(1 - t, 3) * startY + 3 * Math.pow(1 - t, 2) * t * cp1y + 3 * (1 - t) * Math.pow(t, 2) * cp2y + Math.pow(t, 3) * endY;
 
         ctx.beginPath();
-        ctx.arc(curX, curY, 5, 0, Math.PI * 2);
+        ctx.arc(curX, curY, 6, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 12;
         ctx.fill();
         ctx.shadowBlur = 0;
 
         if (p.progress >= 1) {
           packets.splice(idx, 1);
-          addLog(`Processed by ${p.targetNode.name.split(':')[0]} in 38ms with $0.00 token cost.`, 'info');
+          playChime();
+          addLog(`RESOLVED: "${p.task.substring(0, 24)}..." handled by ${p.targetNode.name.split(':')[0]} with $0.00 token cost.`, 'succ');
         }
       });
 
@@ -399,39 +968,41 @@
         const nx = n.x * width;
         const ny = n.y * height;
 
+        // Outer Glow Ring
         ctx.beginPath();
-        ctx.arc(nx, ny, 16, 0, Math.PI * 2);
-        ctx.fillStyle = n.active ? n.color : '#EF4444';
-        ctx.shadowColor = n.active ? n.color : '#EF4444';
-        ctx.shadowBlur = 16;
+        ctx.arc(nx, ny, 20, 0, Math.PI * 2);
+        ctx.fillStyle = n.active ? n.color : '#F43F5E';
+        ctx.shadowColor = n.active ? n.color : '#F43F5E';
+        ctx.shadowBlur = n.active ? 18 : 22;
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        // Inner core
+        // Inner Core
         ctx.beginPath();
-        ctx.arc(nx, ny, 8, 0, Math.PI * 2);
-        ctx.fillStyle = '#090B10';
+        ctx.arc(nx, ny, 10, 0, Math.PI * 2);
+        ctx.fillStyle = '#07090E';
         ctx.fill();
 
-        // Node Label
-        ctx.font = '600 12px sans-serif';
-        ctx.fillStyle = n.active ? '#F3F4F6' : '#EF4444';
+        // Node Title
+        ctx.font = '700 12px -apple-system, sans-serif';
+        ctx.fillStyle = n.active ? '#F8FAFC' : '#F43F5E';
         ctx.textAlign = 'center';
-        ctx.fillText(n.name, nx, ny + 32);
+        ctx.fillText(n.name, nx, ny + 34);
 
-        ctx.font = '400 10px monospace';
+        // Tier Subtitle
+        ctx.font = '500 10px monospace';
         ctx.fillStyle = '#94A3B8';
-        ctx.fillText(n.tier, nx, ny + 46);
+        ctx.fillText(n.tier, nx, ny + 48);
       });
 
       requestAnimationFrame(draw);
     }
     draw();
 
-    // Auto send periodic packets
+    // Auto Periodic Packet
     setInterval(() => {
-      if (Math.random() > 0.4) simulateUserPrompt();
-    }, 3000);
+      if (!chaosActive && Math.random() > 0.45) simulateUserPrompt();
+    }, 3600);
   </script>
 </body>
 </html>
