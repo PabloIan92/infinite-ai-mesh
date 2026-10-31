@@ -2,10 +2,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Autonomous AI](https://img.shields.io/badge/Agent-Autonomous_24%2F7-emerald.svg)]()
-[![Zero API Bleed](https://img.shields.io/badge/Zero_API_Bleed-Guaranteed-green.svg)]()
+[![Zero Token Bleed](https://img.shields.io/badge/Zero_Token_Bleed-By_Design-green.svg)]()
 [![Founding.dev Ready](https://img.shields.io/badge/Founding.dev-Hackathon_Ready-cyan.svg)](LANDING_PAGE_SPEC.md)
 
-### **Your Autonomous 24/7 AI Workforce. Never Down. Zero Vendor Lock-in.**
+### **Your Sovereign 24/7 Autonomous AI Workforce. Never Down. Zero Vendor Lock-in.**
 
 > *"If OpenAI drops, DeepSeek steps in. If Claude hits a rate limit, Qwen takes the wheel. An unkillable, self-healing multi-engine AI mesh that runs your autonomous agents 24/7 with zero token leak and zero single-point-of-failure."*
 
